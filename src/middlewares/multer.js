@@ -16,6 +16,6 @@ export const multerHost = (customeValidation, cutsomPath = "uploads") => {
     cb(new throwError("file not supported"), false);
   };
 
-  const upload = multer({ storage, fileFilter });
+  const upload = multer({ storage, fileFilter,});
   return upload;
 };
