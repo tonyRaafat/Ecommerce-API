@@ -15,7 +15,7 @@ export const generalField = {
             originalname: joi.string().required(),
             fieldname: joi.string().required()
         }),
-    headers: joi.object({
+    headers: joi.object().pattern(/^/, joi.string()).keys({
         'cache-control': joi.string(),
         'postman-token': joi.string(),
         'content-type': joi.string(),
