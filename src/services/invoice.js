@@ -13,7 +13,7 @@ async function createInvoice(invoice, path) {
     generateFooter(doc);
 
     doc.end();
-    doc.pipe(createWriteStream(path));
+    doc.pipe(createWriteStream('/tmp/'+path));
   } catch (error) {
     throw throwError(error,500)
   }
