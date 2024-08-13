@@ -5,7 +5,7 @@ import { auth } from "../../middlewares/auth.js";
 import { authorization } from "../../middlewares/auth.js";
 import * as BC from './brand.controllers.js'
 import { createBrand, deleteBrand, updateBrand } from "./brand.validation.js";
-const router = express.Router();
+const router = express.Router({caseSensitive:true});
 
 router
   .route("/")
@@ -34,11 +34,11 @@ router
   );
 
 router
-  .route("/delete")
+  .route("/:id")
   .delete(
+    validate(deleteBrand),
     auth,
     authorization(["Admin"]),
-    validate(deleteBrand),
     BC.deletebrand
   );
 

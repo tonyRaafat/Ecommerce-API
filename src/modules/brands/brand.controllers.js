@@ -2,11 +2,12 @@ import { nanoid } from "nanoid";
 import cloudinary from "../../utils/cloudinary.js";
 import slugify from "slugify";
 import { throwError } from "../../utils/throwerror.js";
+import { Brand } from "../../../database/models/brand.model.js";
 
 export const createbrand = async (req, res, next) => {
   try {
     const { name } = req.body
-    const brandExist = await brandModel.findOne({
+    const brandExist = await Brand.findOne({
       name: name.toLowerCase(),
     });
     if (brandExist) throw throwError("brand already exist", 409);
@@ -20,7 +21,7 @@ export const createbrand = async (req, res, next) => {
         folder: `Ecommerce/brands/${customeId}`,
       }
     );
-    const brand = await brandModel.create({
+    const brand = await Brand.create({
       name,
       slug: slugify(name, {
         replacement: "_",
@@ -41,7 +42,7 @@ export const updatebrand = async (req, res, next) => {
     const { name } = req.body;
     const { id } = req.params;
 
-    let brand = await brandModel.findOne({
+    let brand = await Brand.findOne({
       _id: id,
       createdBy: req.user._id,
     });
@@ -53,7 +54,7 @@ export const updatebrand = async (req, res, next) => {
       if (name.toLowerCase() === brand.name) {
         throw throwError("name should be diffrent", 400);
       }
-      if (await brandModel.findOne({ name: name.toLowerCase() })) {
+      if (await Brand.findOne({ name: name.toLowerCase() })) {
         throw throwError("name already exists", 409)
       }
       brand.name = name.toLowerCase();
@@ -83,7 +84,7 @@ export const updatebrand = async (req, res, next) => {
 
 export const getbrands = async (req, res, next) => {
   try {
-    const brands = await brandModel.find()
+    const brands = await Brand.find()
     if (brands.length === 0) {
       throw throwError("there is no categories yet", 404)
     }
@@ -97,7 +98,7 @@ export const deletebrand = async (req, res, next) => {
   try {
     const { id } = req.params;
 
-    const brand = await brandModel.findOneAndDelete({
+    const brand = await Brand.findOneAndDelete({
       _id: id,
       createdBy: req.user._id,
     });
@@ -105,7 +106,7 @@ export const deletebrand = async (req, res, next) => {
       throw throwError("brand dosen't exists", 404);
     }
     await cloudinary.uploader.destroy(brand.image.public_id);
-    return req.status(204).json({ msg: "done" })
+    return req.json({ msg: "done" })
   } catch (error) {
     next(error)
   }
