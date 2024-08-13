@@ -1,16 +1,22 @@
 import { createWriteStream } from "fs";
 import PDFDocument from "pdfkit";
+import { throwError } from "../utils/throwerror";
 
 async function createInvoice(invoice, path) {
-  let doc = new PDFDocument({ size: "A4", margin: 50 });
+  try {
 
-  generateHeader(doc);
-  generateCustomerInformation(doc, invoice);
-  generateInvoiceTable(doc, invoice);
-  generateFooter(doc);
+    let doc = new PDFDocument({ size: "A4", margin: 50 });
 
-  doc.end();
-  doc.pipe(createWriteStream(path));
+    generateHeader(doc);
+    generateCustomerInformation(doc, invoice);
+    generateInvoiceTable(doc, invoice);
+    generateFooter(doc);
+
+    doc.end();
+    doc.pipe(createWriteStream(path));
+  } catch (error) {
+    throw throwError(error,500)
+  }
 }
 
 function generateHeader(doc) {
@@ -56,10 +62,10 @@ function generateCustomerInformation(doc, invoice) {
     .text(invoice.shipping.address, 300, customerInformationTop + 15)
     .text(
       invoice.shipping.city +
-        ", " +
-        invoice.shipping.state +
-        ", " +
-        invoice.shipping.country,
+      ", " +
+      invoice.shipping.state +
+      ", " +
+      invoice.shipping.country,
       300,
       customerInformationTop + 30
     )
