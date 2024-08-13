@@ -5,7 +5,7 @@ export const createSubCategory = {
         name: joi.string().min(3).max(30).required(),
         categoryId: joi.string().hex().required()
     }).required(),
-    file: generalField.file.required(),
+    file: generalField.file,
     headers: generalField.headers.required()
 }
 
