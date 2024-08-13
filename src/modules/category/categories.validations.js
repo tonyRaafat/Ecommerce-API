@@ -16,6 +16,6 @@ export const updateCategory = {
     params: joi.object({
         id: joi.string().hex().required()
     }),
-    image: generalField.file.required(),
+    image: generalField.file,
     headers: generalField.headers.required()
 }

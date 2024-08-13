@@ -5,7 +5,7 @@ export const createBrand = {
     body: joi.object({
         name: joi.string().min(3).max(30).required(),
     }).required(),
-    file: generalField.file.required(),
+    file: generalField.file,
     headers: generalField.headers.required()
 }
 
