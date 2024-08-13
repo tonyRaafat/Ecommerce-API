@@ -5,7 +5,7 @@ import { auth, authorization } from "../../middlewares/auth.js";
 import { validate } from "../../middlewares/validate.js";
 import { multerHost, validExtension } from "../../middlewares/multer.js";
 import { createSubCategory, updateSubCategory } from "./subCategories.validations.js";
-const router = express.Router();
+const router = express.Router({caseSensitive:true});
 
 router
     .route("/")
