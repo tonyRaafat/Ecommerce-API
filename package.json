@@ -5,7 +5,11 @@
   "main": "index.js",
   "type": "module",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node index.js"
+  },
+  "engines": {
+    "node": "20.12.2"
   },
   "keywords": [],
   "author": "",
@@ -13,7 +17,9 @@
   "dependencies": {
     "bcrypt": "^5.1.1",
     "cloudinary": "^1.41.3",
+    "cors": "^2.8.5",
     "dotenv": "^16.4.5",
+    "e-commerce-api": "file:",
     "express": "^4.19.2",
     "joi": "^17.13.3",
     "jsonwebtoken": "^9.0.2",
@@ -22,6 +28,8 @@
     "multer-storage-cloudinary": "^4.0.0",
     "nanoid": "^5.0.7",
     "nodemailer": "^6.9.14",
-    "slugify": "^1.6.6"
+    "pdfkit": "^0.15.0",
+    "slugify": "^1.6.6",
+    "stripe": "^16.7.0"
   }
 }
