@@ -12,19 +12,19 @@ export const register = async (req, res, next) => {
         if (user) {
             throw throwError('email already exist', 409)
         }
-        const token = jwt.sign({ email }, process.env.JWT_SECRET, { expiresIn: 60 * 3 })
-        const link = `http://localhost:3000/verifyEmail/${token}`
-        const rftoken = jwt.sign({ email }, process.env.JWT_SECRET + "refresh", { expiresIn: 60 * 3 })
-        const rflink = `http://localhost:3000/refreshtoken/${token}`
-        await sendEmail(email, "Verify Email", {
-            text: `go to this link: ${link}`,
-            html: `<a href="${link}">click here</a> <br> <a href = "${rflink}" >click here to resend link</a>`
-        })
+
         const salt = await bcrypt.genSalt(10);
         const hashedPassword = await bcrypt.hash(password, salt);
         req.body.password = hashedPassword
         user = new User(req.body);
-        await sendVerificationEmail(user)
+        const token = jwt.sign({ email }, process.env.JWT_SECRET, { expiresIn: 60 * 3 })
+        const link = `http://localhost:3000/users/verifyEmail/${token}`
+        const rftoken = jwt.sign({ email }, process.env.JWT_SECRET + "refresh", { expiresIn: 60 * 3 })
+        const rflink = `http://localhost:3000/users/refreshtoken/${rftoken}`
+        await sendEmail(email, "Verify Email", {
+            text: `go to this link: ${link}`,
+            html: `<a href="${link}">click here</a> <br> <a href = "${rflink}" >click here to resend link</a>`
+        })
         await user.save()
         res.send({ id: user._id, username: user.username, email: user.email });
     } catch (error) {
@@ -33,15 +33,20 @@ export const register = async (req, res, next) => {
 }
 
 export const refreshtoken = async (req, res, next) => {
-    const { rftoken } = req.params
-    const decoded = jwt.verify(rftoken, process.env.JWT_SECRET + "refresh")
-    if (!decoded?.email) throw throwError("invalid token", 400)
-    const token = jwt.sign({email: decoded.email }, process.env.JWT_SECRET, { expiresIn: 60 * 3 })
-    const link = `http://localhost:3000/verifyEmail/${token}`
-    await sendEmail(decoded.email, "Verify Email", {
-        text: `go to this link: ${link}`,
-        html: `<a href="${link}">click here</a>`
-    })
+    try {
+        const { rftoken } = req.params
+        const decoded = jwt.verify(rftoken, process.env.JWT_SECRET + "refresh")
+        if (!decoded?.email) throw throwError("invalid token", 400)
+        const token = jwt.sign({ email: decoded.email }, process.env.JWT_SECRET, { expiresIn: 60 * 3 })
+        const link = `http://localhost:3000/users/verifyEmail/${token}`
+        await sendEmail(decoded.email, "Verify Email", {
+            text: `go to this link: ${link}`,
+            html: `<a href="${link}">click here</a>`
+        })
+        res.send({ msg: "done" })
+    } catch (error) {
+        next(error)
+    }
 }
 export const verifyEmail = async (req, res, next) => {
     try {
@@ -196,7 +201,7 @@ export const resetPassword = async (req, res, next) => {
             } else {
                 const salt = await bcrypt.genSalt(10);
                 const hashedPassword = bcrypt.hashSync(password, salt);
-                await User.updateOne({ email }, { $unset: { otp: 1 }, password: hashedPassword, passwordChanged:Date.now() })
+                await User.updateOne({ email }, { $unset: { otp: 1 }, password: hashedPassword, passwordChanged: Date.now() })
                 return res.status(200).json({ msg: "password updated" });
             }
         }

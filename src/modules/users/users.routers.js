@@ -1,5 +1,5 @@
 import express from 'express';
-import { deleteUser, forgotPassword, getOtherUsersData, getUserData, login, register, resetPassword, updatePassword, updateUser, verifyOtp } from './users.controllers.js';
+import { deleteUser, forgotPassword, getOtherUsersData, getUserData, login, refreshtoken, register, resetPassword, updatePassword, updateUser, verifyEmail, verifyOtp } from './users.controllers.js';
 import { validate } from '../../middlewares/validate.js';
 import { forgotPasswordValidation, loginValidation, otpValidation, registerValidation, resetPasswordValidation, updatePasswordValidation, updateUservalidation } from './users.validations.js';
 import { auth } from '../../middlewares/auth.js';
@@ -7,6 +7,8 @@ import { auth } from '../../middlewares/auth.js';
 const router = express.Router();
 
 router.post('/register',validate(registerValidation), register);
+router.get('/verifyEmail/:token',verifyEmail)
+router.get('/refreshtoken/:rftoken',refreshtoken)
 router.post('/verifyOtp',validate(otpValidation),verifyOtp)
 router.post('/forgot-password',validate(forgotPasswordValidation),forgotPassword)
 router.post('/reset-password',validate(resetPasswordValidation),resetPassword)
