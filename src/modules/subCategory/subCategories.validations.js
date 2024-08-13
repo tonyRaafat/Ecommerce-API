@@ -17,7 +17,7 @@ export const updateSubCategory = {
     params: joi.object({
         id: joi.string().hex().required()
     }),
-    file: generalField.file,
+    file: generalField.file.required(),
     headers: generalField.headers.required()
 }
 
