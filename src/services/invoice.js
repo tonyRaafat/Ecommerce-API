@@ -1,6 +1,6 @@
 import { createWriteStream } from "fs";
 import PDFDocument from "pdfkit";
-import { throwError } from "../utils/throwerror";
+import { throwError } from "../utils/throwerror.js";
 
 async function createInvoice(invoice, path) {
   try {
