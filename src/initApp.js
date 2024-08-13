@@ -9,7 +9,13 @@ export const initApp = (app, express) => {
   dbConnection();
 
   app.use(cors())
-  app.use(express.json());
+  app.use((req,res,next)=>{
+    if(req.originalUrl == '/orders/webhook'){
+      return next()
+    }else{
+      return express.json()(req,res,next)
+    }
+  });
 
   app.get('/',(req,res,next)=>{
     res.status(200).json({msg:"Server is running..."})
