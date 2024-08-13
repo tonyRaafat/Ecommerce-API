@@ -251,8 +251,8 @@ export const webhook = async (req, res, next) => {
         }
 
         // Handle the event
+        const { orderId } = event.data.object.metadata;
         if (event.type !== "checkout.session.completed") {
-            const { orderId } = event.data.object.metadata;
             await OrderModel.findByIdAndUpdate(orderId, { status: "rejected" });
             return res.status(400).json({ msg: "fail" });
         } else {
